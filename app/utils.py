@@ -46,7 +46,7 @@ def chatgpt(conversation, user_input, temperature=1, frequency_penalty=0.2, pres
     messages_input = conversation.copy()
 
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         temperature=temperature,
         frequency_penalty=frequency_penalty,
         presence_penalty=presence_penalty,
@@ -65,7 +65,7 @@ def chatgpt_auto(conversation, chatbot, user_input, temperature=0.7, frequency_p
     messages_input.insert(0, prompt[0])
     # Make an API call to the ChatCompletion endpoint with the updated messages
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         temperature=temperature,
         frequency_penalty=frequency_penalty,
         presence_penalty=presence_penalty,
@@ -89,14 +89,14 @@ def send_email(recipients, subject, body, attachment=None):
         with open(attachment, 'rb') as f:
             files = {'attachment': (os.path.basename(attachment), f)}
             response = requests.post(
-                "https://api.mailgun.net/v3/sandboxd34a95b1834b4c658c64618856a6c38a.mailgun.org/messages",
+                "https://api.mailgun.net/v3/sandbox9e48b920975b402b91eb5c410423f81b.mailgun.org/messages",
                 auth=("api", mailgun_api_key),
                 data=data,
                 files=files
             )
     else:
         response = requests.post(
-            "https://api.mailgun.net/v3/sandboxd34a95b1834b4c658c64618856a6c38a.mailgun.org/messages",
+            "https://api.mailgun.net/v3/sandbox9e48b920975b402b91eb5c410423f81b.mailgun.org/messages",
             auth=("api", mailgun_api_key),
             data=data
         )
