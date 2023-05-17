@@ -69,6 +69,10 @@
         }
         document.getElementById('submitButton').addEventListener('click', function(event) {
             var submitButton = document.getElementById('submitButton');
+            var canvas = document.getElementById('canvas');
+            submitButton.style.display = 'none';
+            canvas.style.display = 'block';
+            animate();
             submitButton.disabled = true;
             submitButton.innerText = 'Sending...';
             event.preventDefault();
