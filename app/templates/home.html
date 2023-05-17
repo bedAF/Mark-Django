@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,21 +8,22 @@
 </head>
 <body class="bg-gray-900 text-white">
     <div class="container mx-auto py-12">
+        <audio id="myAudio" src="{% static 'Open any app Sound.mp3' %}"></audio>
         <h1 class="text-4xl font-bold mb-8 text-center">Path Finder</h1>
         <div class="w-full max-w-lg mx-auto bg-gray-200 text-black p-8 shadow-2xl rounded-lg">
-            <form method="post" enctype="multipart/form-data" id="emailForm">
+            <form method="post" action="{% url 'automail' %}" enctype="multipart/form-data" id="emailForm">
                 {% csrf_token %}
                 <div class="mb-6">
-                    {{ form.recipients.label_tag }} 
-                    <input type="text" name="{{ form.recipients.name }}" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
+                    Recipient:
+                    <input type="email" name="recipentEmail" required class="w-full px-3 py-2 border border-gray-900 rounded text-black">
                 </div>
                 <div class="mb-6">
-                    {{ form.topic.label_tag }} 
-                    <input type="text" name="{{ form.topic.name }}" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
+                    Topic:
+                    <input type="text" name="topic" required class="w-full px-3 py-2 border border-gray-900 rounded text-black">
                 </div>
                 <div class="mb-6">
-                    {{ form.imagine.label_tag }} 
-                    <input type="text" name="{{ form.imagine.name }}" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
+                    Describe the image you want to see:
+                    <input type="text" name="emimage_prompt" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
                 </div>
                 <div>
                     <button type="submit" id="submitButton" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -32,10 +34,22 @@
         </div>
     </div>
     <script>
-        document.getElementById('emailForm').addEventListener('submit', function() {
+        var audio = document.getElementById('myAudio');
+
+        document.getElementById('submitButton').addEventListener('click', function(event) {
             var submitButton = document.getElementById('submitButton');
             submitButton.disabled = true;
-            submitButton.innerText = 'Loading...';
+            submitButton.innerText = 'Sending...';
+            event.preventDefault();
+            audio.load();
+            audio.play().then(_ => {
+                // Audio playback started
+                // Now we can submit the form
+                document.getElementById('emailForm').submit();
+            }).catch(err => {
+                // An error occurred
+                console.error(err);
+            });
         });
     </script>
 </body>

@@ -8,12 +8,17 @@ import base64
 openai.api_key = os.getenv("OPENAI_APIKEY")
 mailgun_api_key = os.getenv("MAILGUN_API")
 sd_api_key = os.getenv("SDAPI_KEY")
+developerKey=os.getenv("GOOGLE_SEARCH_API_KEY")
+google_custome_search = os.getenv("GOOGLE_SEARCH_CX")
+mailgun_link = os.getenv("MAILGUN_LINK")
 
 
 def fetch_ai_news():
-    search_engine = build("customsearch", "v1", developerKey=os.getenv("GOOGLE_SEARCH_API_KEY"))
+    print("34", os.getenv("SDAPI_KEY"))
+
+    search_engine = build("customsearch", "v1", developerKey=developerKey)
     query = "AI site:news.google.com"
-    results = search_engine.cse().list(q=query, cx=os.getenv("GOOGLE_SEARCH_CX"), num=6).execute()
+    results = search_engine.cse().list(q=query, cx=google_custome_search, num=6).execute()
     print("results", results)
     # Extract the titles, snippets, and URLs
     news_items = [{'title': result['title'], 'snippet': result['snippet'], 'url': result['link']} for result in results['items']]
@@ -29,6 +34,12 @@ def summarize_headlines(news_items):
         summary, conversation = chatgpt([],f"Please summarize the following headline, snippet and include link(url) for each snippet: {headline} - {snippet} - {url}")
         summarized_headlines.append(summary)
     return summarized_headlines, conversation
+
+def save_headlines_to_file(headlines):
+    result = ""
+    for headline in headlines:
+        result += headline + "\n"
+    return result
 
 def chatgpt(conversation, user_input, temperature=1, frequency_penalty=0.2, presence_penalty=0):
     conversation.append({"role": "user", "content": user_input})
@@ -66,7 +77,7 @@ def chatgpt_auto(conversation, chatbot, user_input, temperature=0.7, frequency_p
     # Return the chatbot's response
     return chat_response
 
-def send_email(mailgun_api_key, recipients, subject, body, attachment=None):
+def send_email(recipients, subject, body, attachment=None):
     data = {
         "from":"Mark - Afterflea <mohamed@sandboxd34a95b1834b4c658c64618856a6c38a.mailgun.org>",
         "to": recipients,
@@ -98,7 +109,7 @@ def send_email(mailgun_api_key, recipients, subject, body, attachment=None):
     print("Email sent successfully.")
     return True
 
-def generate_image(api_key, text_prompt, height=512, width=512, cfg_scale=7, clip_guidance_preset="FAST_BLUE", steps=50, samples=1):
+def generate_image(text_prompt, height=512, width=512, cfg_scale=7, clip_guidance_preset="FAST_BLUE", steps=50, samples=1):
     api_host = 'https://api.stability.ai'
     engine_id = "stable-diffusion-xl-beta-v2-2-2"
 
@@ -107,7 +118,7 @@ def generate_image(api_key, text_prompt, height=512, width=512, cfg_scale=7, cli
         headers={
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": f"Bearer {api_key}"
+            "Authorization": f"Bearer {sd_api_key}"
         },
         json={
             "text_prompts": [
@@ -142,6 +153,5 @@ def generate_image(api_key, text_prompt, height=512, width=512, cfg_scale=7, cli
 def fnGetNews():
     headlines = fetch_ai_news()
     summarized_headlines, _ = summarize_headlines(headlines)
-    return summarized_headlines
-
-print("34", os.getenv("SDAPI_KEY"))
+    result = save_headlines_to_file(summarized_headlines)
+    return result
