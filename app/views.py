@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from .utils import *
+from .forms import EmailForm
 # Create your views here.
 def fnIndex(request):
     return render(request=request, template_name="home.html")
 
 def fnSendEmail(request):
+    
     if request.method == "POST":
         try:
             recipentEmail = request.POST['recipentEmail']
