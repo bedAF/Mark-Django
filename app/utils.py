@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import base64
 
-openai.api_key = os.getenv("OPENAI_APIKEY")
+OPENAI_KEY = os.getenv("OPENAI_APIKEY")
 mailgun_api_key = os.getenv("MAILGUN_API")
 sd_api_key = os.getenv("SDAPI_KEY")
 developerKey=os.getenv("GOOGLE_SEARCH_API_KEY")
@@ -13,17 +13,17 @@ google_custome_search = os.getenv("GOOGLE_SEARCH_CX")
 mailgun_link = os.getenv("MAILGUN_LINK")
 
 
-def fetch_ai_news():
-    print("34", os.getenv("SDAPI_KEY"))
 
+conversation = []
+
+
+def fetch_ai_news():
     search_engine = build("customsearch", "v1", developerKey=developerKey)
     query = "AI site:news.google.com"
-    results = search_engine.cse().list(q=query, cx=google_custome_search, num=6).execute()
-    print("results", results)
+    results = search_engine.cse().list(q=query, cx=google_custome_search, num=4).execute()
     # Extract the titles, snippets, and URLs
     news_items = [{'title': result['title'], 'snippet': result['snippet'], 'url': result['link']} for result in results['items']]
     return news_items
-
 
 def summarize_headlines(news_items):
     summarized_headlines = []
@@ -31,9 +31,10 @@ def summarize_headlines(news_items):
         headline = item['title']
         snippet = item['snippet']
         url = item['url']
-        summary, conversation = chatgpt([],f"Please summarize the following headline, snippet and include link(url) for each snippet: {headline} - {snippet} - {url}")
+        summary = chatgpt(f"Please summarize the following headline, snippet and include link(url) for each snippet: {headline} - {snippet} - {url}")
         summarized_headlines.append(summary)
-    return summarized_headlines, conversation
+    return summarized_headlines
+
 
 def save_headlines_to_file(headlines):
     result = ""
@@ -41,9 +42,14 @@ def save_headlines_to_file(headlines):
         result += headline + "\n"
     return result
 
-def chatgpt(conversation, user_input, temperature=1, frequency_penalty=0.2, presence_penalty=0):
+def chatgpt(user_input, temperature=1, frequency_penalty=0.2, presence_penalty=0):
+    openai.api_key = os.getenv("OPENAI_APIKEY")
+    global conversation
+
     conversation.append({"role": "user", "content": user_input})
     messages_input = conversation.copy()
+    print("message_input: ", messages_input)
+     
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -54,9 +60,10 @@ def chatgpt(conversation, user_input, temperature=1, frequency_penalty=0.2, pres
 
     chat_response = completion['choices'][0]['message']['content']
     conversation.append({"role": "assistant", "content": chat_response})
-    return chat_response, conversation
+    return chat_response
 
 def chatgpt_auto(conversation, chatbot, user_input, temperature=0.7, frequency_penalty=0.2, presence_penalty=0):
+    openai.api_key = os.getenv("OPENAI_APIKEY")
     # Update conversation by appending the user's input
     conversation.append({"role": "user","content": user_input})
     # Insert prompt into message history
@@ -79,25 +86,26 @@ def chatgpt_auto(conversation, chatbot, user_input, temperature=0.7, frequency_p
 
 def send_email(recipients, subject, body, attachment=None):
     data = {
-        "from":"Mark - Afterflea <mohamed@sandboxd34a95b1834b4c658c64618856a6c38a.mailgun.org>",
+        "from":"Mark <mailgun@sandbox0eb00b3b4ea9459faad17ff10f9660df.mailgun.org>",
         "to": recipients,
         "subject": subject,
         "html": body,
     }
 
+    print(os.getenv("MAILGUN_LINK"), "1111111111")
     if attachment:
         with open(attachment, 'rb') as f:
             files = {'attachment': (os.path.basename(attachment), f)}
             response = requests.post(
-                "https://api.mailgun.net/v3/sandboxd34a95b1834b4c658c64618856a6c38a.mailgun.org/messages",
-                auth=("api", mailgun_api_key),
+                "https://api.mailgun.net/v3/sandbox0eb00b3b4ea9459faad17ff10f9660df.mailgun.org/messages",
+                auth=("api", "f0367b6781e065be1a2cd4c4a28e8b33-db4df449-85ecd538"),
                 data=data,
                 files=files
             )
     else:
         response = requests.post(
-            "https://api.mailgun.net/v3/sandboxd34a95b1834b4c658c64618856a6c38a.mailgun.org/messages",
-            auth=("api", mailgun_api_key),
+            "https://api.mailgun.net/v3/sandbox0eb00b3b4ea9459faad17ff10f9660df.mailgun.org/messages",
+            auth=("api", "f0367b6781e065be1a2cd4c4a28e8b33-db4df449-85ecd538"),
             data=data
         )
 
@@ -112,7 +120,7 @@ def send_email(recipients, subject, body, attachment=None):
 def generate_image(text_prompt, height=512, width=512, cfg_scale=7, clip_guidance_preset="FAST_BLUE", steps=50, samples=1):
     api_host = 'https://api.stability.ai'
     engine_id = "stable-diffusion-xl-beta-v2-2-2"
-
+    sd_api_key = os.getenv("SDAPI_KEY")
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/text-to-image",
         headers={
@@ -149,9 +157,3 @@ def generate_image(text_prompt, height=512, width=512, cfg_scale=7, clip_guidanc
         f.write(base64.b64decode(image_data))
 
     return image_filename
-
-def fnGetNews():
-    headlines = fetch_ai_news()
-    summarized_headlines, _ = summarize_headlines(headlines)
-    result = save_headlines_to_file(summarized_headlines)
-    return result

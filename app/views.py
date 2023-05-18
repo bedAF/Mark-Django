@@ -1,20 +1,21 @@
 from django.shortcuts import render
 from .utils import *
-from .forms import EmailForm
 # Create your views here.
 def fnIndex(request):
     return render(request=request, template_name="home.html")
 
 def fnSendEmail(request):
-    
     if request.method == "POST":
-        try:
             recipentEmail = request.POST['recipentEmail']
             topic = request.POST['topic']
             emimage_prompt = request.POST['emimage_prompt']
 
-            summarized_headlines = fnGetNews()
-            prompt1 = topic.replace("<<AINEWS>>", summarized_headlines).replace("\n", "\n\n")
+            headlines = fetch_ai_news()
+            summarized_headlines = summarize_headlines(headlines)
+            # # Save the summarized headlines to a text file
+            ainews = save_headlines_to_file(summarized_headlines)
+            print(ainews)
+            prompt1 = topic.replace("<<AINEWS>>", ainews).replace("\n", "\n\n")
             conversation1 = []
             email_content = chatgpt_auto(conversation1, prompt1, prompt1)
             # Add HTML line breaks
@@ -38,6 +39,5 @@ def fnSendEmail(request):
                 return render(request=request, template_name="response.html", context={"response": "Your email has been sent successfully."})
             else:
                 return render(request=request, template_name="response.html", context={"response": "Failed send email"})
-        except:
-            return render(request=request, template_name="response.html", context={"response": "Failed send email"})
+            # return render(request=request, template_name="response.html", context={"response": "Failed send email"})
     return render(request=request, template_name="home.html")
