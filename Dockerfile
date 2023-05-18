@@ -23,7 +23,7 @@ RUN export PATH="/root/.local/bin:$PATH"
     # python manage.py collectstatic
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 3000
 
 # Set the entrypoint
-ENTRYPOINT ["python", "manage.py","runserver", "0.0.0.0:8080"]
+ENTRYPOINT ["python", "manage.py","runserver", "0.0.0.0:3000"]
