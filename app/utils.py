@@ -43,13 +43,15 @@ def save_headlines_to_file(headlines):
     return result
 
 def chatgpt(user_input, temperature=1, frequency_penalty=0.2, presence_penalty=0):
+    print(os.getenv("OPENAI_APIKEY"))
     openai.api_key = os.getenv("OPENAI_APIKEY")
     global conversation
 
     conversation.append({"role": "user", "content": user_input})
     messages_input = conversation.copy()
-    print("message_input: ", messages_input)
-     
+    # print("message_input: ", messages_input)
+    print(type(messages_input))
+    print(len(messages_input))
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -85,8 +87,9 @@ def chatgpt_auto(conversation, chatbot, user_input, temperature=0.7, frequency_p
     return chat_response
 
 def send_email(recipients, subject, body, attachment=None):
+    domain = os.getenv("DOMAIN")
     data = {
-        "from":"Mark <mailgun@sandbox0eb00b3b4ea9459faad17ff10f9660df.mailgun.org>",
+        "from":f"Mark <{domain}>",
         "to": recipients,
         "subject": subject,
         "html": body,
@@ -97,15 +100,15 @@ def send_email(recipients, subject, body, attachment=None):
         with open(attachment, 'rb') as f:
             files = {'attachment': (os.path.basename(attachment), f)}
             response = requests.post(
-                "https://api.mailgun.net/v3/sandbox0eb00b3b4ea9459faad17ff10f9660df.mailgun.org/messages",
-                auth=("api", "f0367b6781e065be1a2cd4c4a28e8b33-db4df449-85ecd538"),
+                os.getenv("MAILGUN_LINK"),
+                auth=("api", os.getenv("MAILGUN_API")),
                 data=data,
                 files=files
             )
     else:
         response = requests.post(
-            "https://api.mailgun.net/v3/sandbox0eb00b3b4ea9459faad17ff10f9660df.mailgun.org/messages",
-            auth=("api", "f0367b6781e065be1a2cd4c4a28e8b33-db4df449-85ecd538"),
+            os.getenv("MAILGUN_LINK"),
+            auth=("api", os.getenv("MAILGUN_API")),
             data=data
         )
 
