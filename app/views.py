@@ -10,12 +10,14 @@ def fnSendEmail(request):
             topic = request.POST['topic']
             emimage_prompt = request.POST['emimage_prompt']
 
-            headlines = fetch_ai_news()
+            headlines = fetch_ai_news(topic)
             summarized_headlines = summarize_headlines(headlines)
             # # Save the summarized headlines to a text file
             ainews = save_headlines_to_file(summarized_headlines)
             print(ainews)
-            prompt1 = topic.replace("<<AINEWS>>", ainews).replace("\n", "\n\n")
+            with open("prompt1.txt", "r") as fp:
+                prompt1 = fp.read()
+            prompt1 = prompt1.replace("<<AINEWS>>", ainews).replace("\n", "\n\n")
             conversation1 = []
             email_content = chatgpt_auto(conversation1, prompt1, prompt1)
             # Add HTML line breaks

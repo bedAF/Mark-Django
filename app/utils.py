@@ -17,10 +17,11 @@ mailgun_link = os.getenv("MAILGUN_LINK")
 conversation = []
 
 
-def fetch_ai_news():
-    search_engine = build("customsearch", "v1", developerKey=developerKey)
-    query = "AI site:news.google.com"
-    results = search_engine.cse().list(q=query, cx=google_custome_search, num=4).execute()
+def fetch_ai_news(topic):
+    search_engine = build("customsearch", "v1", developerKey=os.getenv("GOOGLE_SEARCH_API_KEY"))
+    query = f"{topic} site:news.google.com"
+    results = search_engine.cse().list(q=query, cx=os.getenv("GOOGLE_SEARCH_API_KEY"), num=6).execute()
+
     # Extract the titles, snippets, and URLs
     news_items = [{'title': result['title'], 'snippet': result['snippet'], 'url': result['link']} for result in results['items']]
     return news_items
