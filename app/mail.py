@@ -28,6 +28,8 @@ def save_file(filepath, content):
 api_key = os.environ.get('OPENAI_APIKEY')
 sd_api_key = os.environ.get('SDAPI_KEY')
 mailgun_api_key = os.environ.get('MAILGUN_API')
+mailgun_link = os.environ.get('MAILGUN_LINK')
+domain = os.environ.get('DOMAIN')
 
 # Initialize an empty list to store the conversations
 conversation1 = []
@@ -69,7 +71,7 @@ presence_penalty=0):
 # TODO: remember to change the recipient email address
 def send_email(mailgun_api_key, subject, body, attachment=None):
     data = {
-        "from":"Shafik - Afterflea <mailgun@sandbox35481a3344084434a0cd807e4fc5e94b.mailgun.org>",
+        "from":f"Shafik - Afterflea <{domain}>",
         "to": f"{recipients}",
         "subject": subject,
         "html": body,
@@ -79,14 +81,14 @@ def send_email(mailgun_api_key, subject, body, attachment=None):
         with open(attachment, 'rb') as f:
             files = {'attachment': (os.path.basename(attachment), f)}
             response = requests.post(
-                "https://api.mailgun.net/v3/sandbox35481a3344084434a0cd807e4fc5e94b.mailgun.org/messages",
+                f"{mailgun_link}",
                 auth=("api", mailgun_api_key),
                 data=data,
                 files=files
             )
     else:
         response = requests.post(
-            "https://api.mailgun.net/v3/sandbox35481a3344084434a0cd807e4fc5e94b.mailgun.org/messages",
+                f"{mailgun_link}",
             auth=("api", mailgun_api_key),
             data=data
         )
