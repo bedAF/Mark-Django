@@ -14,10 +14,10 @@ def save_file(filepath, content):
 
 
 # Read the Google API key and Custom Search Engine ID from files
-GOOGLE_SEARCH_API_KEY = os.environ.get('GOOGLE_API_KEY')
-GOOGLE_SEARCH_CX = os.environ.get('GOOGLECX_API_ID')
+GOOGLE_SEARCH_API_KEY = os.environ.get('GOOGLE_SEARCH_API_KEY')
+GOOGLE_SEARCH_CX = os.environ.get('GOOGLE_SEARCH_CX')
 
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+openai.api_key = os.environ.get('OPENAI_APIKEY')
 conversation = []
 
 def fetch_ai_news(topic):

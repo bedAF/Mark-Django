@@ -25,9 +25,9 @@ def save_file(filepath, content):
         outfile.write(content)
 
 # Set the OpenAI API keys by reading them from files
-api_key = os.environ.get('OPENAI_API_KEY')
-sd_api_key = os.environ.get('SD_API_KEY')
-mailgun_api_key = os.environ.get('MAILGUN_API_KEY')
+api_key = os.environ.get('OPENAI_APIKEY')
+sd_api_key = os.environ.get('SDAPI_KEY')
+mailgun_api_key = os.environ.get('MAILGUN_API')
 
 # Initialize an empty list to store the conversations
 conversation1 = []
@@ -41,6 +41,7 @@ presence_penalty=0):
 
     # Update conversation by appending the user's input
     conversation.append({"role": "user","content": user_input})
+    
 
     # Insert prompt into message history
     messages_input = conversation.copy()
@@ -60,6 +61,7 @@ presence_penalty=0):
 
     # Update conversation by appending the chatbot's response
     conversation.append({"role": "assistant", "content": chat_response})
+    print("conversations :", conversation)
 
     # Return the chatbot's response
     return chat_response
