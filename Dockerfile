@@ -19,7 +19,8 @@ RUN pip3 install -r requirements.txt
 #copy migrations
 RUN export PATH="/root/.local/bin:$PATH" && \
     python manage.py migrate
-#RUN export PATH="/root/.local/bin:$PATH" && 
+RUN export PATH="/root/.local/bin:$PATH" && \
+    python manage.py collectstatic
 
 # Expose the port
 EXPOSE 3000
