@@ -24,9 +24,9 @@ def fnIndex(request):
 
 def fnSendEmail(request):
     if request.method == "POST":
-        form = EmailForm(request.POST, request.FILES)
+        # form = EmailForm(request.POST, request.FILES)
         # recipients = form.cleaned_data['recipients']
-        topic = form.cleaned_data['topic']
+        topic = request.POST.['topic']
         imagine = form.cleaned_data['imagine']
         # attachment = request.FILES.get('attachment')
 
