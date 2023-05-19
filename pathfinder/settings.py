@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -127,19 +127,22 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'app/static')]
+    os.path.join(BASE_DIR, 'app/static/app')
+]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
-
-# GENERATED_IMAGES_DIR = os.path.join(BASE_DIR, "SDimages")
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# Secure proxy 
+GENERATED_IMAGES_DIR = os.path.join(BASE_DIR, "SDimages")
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_TRUSTED_ORIGINS = ['https://*.run.app', 'https://*.0.0.0.0']
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+PROMPT = os.path.join(BASE_DIR, "prompt1.txt")
+CHATBOT = os.path.join(BASE_DIR, "chatbot1.txt")
