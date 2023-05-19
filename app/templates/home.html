@@ -21,10 +21,10 @@
         <div class="w-full max-w-lg mx-auto bg-gray-200 text-black p-8 shadow-2xl rounded-lg">
             <form method="post" action="{% url 'automail' %}" enctype="multipart/form-data" id="emailForm">
                 {% csrf_token %}
-                <div class="mb-6">
+                <!-- <div class="mb-6">
                     Recipient:
                     <textarea type="email" name="recipentEmail" required class="w-full px-3 py-2 border border-gray-900 rounded text-black"></textarea>
-                </div>
+                </div> -->
                 <div class="mb-6">
                     Topic:
                     <input type="text" name="topic" required class="w-full px-3 py-2 border border-gray-900 rounded text-black">

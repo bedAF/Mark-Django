@@ -1,3 +1,6 @@
 .env
 __pycache__
 staticfiles
+pathfinder\__pycache__
+app\migrations\__pycache__
+app\__pycache__
