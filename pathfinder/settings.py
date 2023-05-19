@@ -125,4 +125,9 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+GENERATED_IMAGES_DIR = os.path.join(BASE_DIR, "SDimages")
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+PROMPT = os.path.join(BASE_DIR, "prompt1.txt")
+
+CHATBOT = os.path.join(BASE_DIR, "chatbot1.txt")
